@@ -34,15 +34,15 @@ jobs:
         run: ./gradlew --no-daemon build
 
       - name: Checksum installable JAR
-        run: cd build/libs && sha256sum horsefly-1.0.1.jar > horsefly-1.0.1.jar.sha256
+        run: cd build/libs && sha256sum horsefly-1.0.2.jar > horsefly-1.0.2.jar.sha256
 
       - name: Upload build
         uses: actions/upload-artifact@v7
         with:
           name: horsefly-meteor-26.1.2
           path: |
-            build/libs/horsefly-1.0.1.jar
-            build/libs/horsefly-1.0.1.jar.sha256
+            build/libs/horsefly-1.0.2.jar
+            build/libs/horsefly-1.0.2.jar.sha256
           if-no-files-found: error
 
   release:
@@ -67,5 +67,5 @@ jobs:
           prerelease: true
           fail_on_unmatched_files: true
           files: |
-            build/horsefly-1.0.1.jar
-            build/horsefly-1.0.1.jar.sha256
+            build/horsefly-1.0.2.jar
+            build/horsefly-1.0.2.jar.sha256

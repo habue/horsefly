@@ -67,3 +67,18 @@ tasks {
         )
     }
 }
+
+val checkMetadataCompatibility by tasks.registering(JavaExec::class) {
+    group = "verification"
+    description = "Checks Meteor snapshot compatibility using Fabric Loader's version parser."
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("me.dmt.horsefly.MetadataCompatibilityCheck")
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get().toInt()))
+    })
+}
+
+tasks.check {
+    dependsOn(checkMetadataCompatibility)
+}

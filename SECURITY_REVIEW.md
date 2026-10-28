@@ -25,3 +25,7 @@ The project now targets Minecraft/Meteor 26.1.2, has explicit loader and Meteor 
 This is a static source review, not a guarantee of absence of malicious behavior. It does not establish the safety of every transitive dependency, Meteor itself, ViaFabricPlus, future upstream changes or previously downloaded third-party binaries. Runtime traffic was not captured in a live Minecraft session. Compatibility compilation and GitHub workflow results must be evaluated separately from these source findings.
 
 Java 25 must be installed explicitly (Actions does this); the automatic Foojay toolchain download plugin was removed to reduce build-time external resolution.
+
+## 1.0.2 compatibility correction
+
+The Meteor predicate is `>=26.1.2- <26.2-`, accepting numbered 26.1.2 prerelease builds (including 26.1.2-42) while excluding 26.2 prereleases. A verification task tests the processed descriptor with Fabric Loader's actual version parser during `check` / `build`.
