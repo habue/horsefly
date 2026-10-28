@@ -82,3 +82,8 @@ val checkMetadataCompatibility by tasks.registering(JavaExec::class) {
 tasks.check {
     dependsOn(checkMetadataCompatibility)
 }
+
+// The test source set contains a standalone JavaExec check, not JUnit tests.
+tasks.test {
+    failOnNoDiscoveredTests.set(false)
+}
