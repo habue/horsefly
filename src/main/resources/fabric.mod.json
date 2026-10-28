@@ -8,7 +8,7 @@
     "dmt"
   ],
   "contact": {
-    "sources": "https://github.com/crabs3/horsefly"
+    "sources": "https://github.com/habue/horsefly"
   },
   "environment": "client",
   "entrypoints": {
@@ -32,7 +32,8 @@
   },
   "depends": {
     "java": ">=${jdk_version}",
+    "fabricloader": ">=0.19.2",
     "minecraft": "${minecraft_version}",
-    "meteor-client": "*"
+    "meteor-client": ">=26.1.2 <26.2"
   }
 }

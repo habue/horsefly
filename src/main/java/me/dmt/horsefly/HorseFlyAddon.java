@@ -23,6 +23,6 @@ public class HorseFlyAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("crabs3", "horsefly");
+        return new GithubRepo("habue", "horsefly", "main", null);
     }
 }

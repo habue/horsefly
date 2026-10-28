@@ -1,60 +1,31 @@
-# horsefly
+# HorseFly for Meteor 26.1.2
 
-meteor addon that lets you fly horses
+Client-side horse movement addon for **Minecraft Java 26.1.2** and **Meteor Client 26.1.2**. Requires Java 25 and Fabric Loader 0.19.2 or newer. It is not a Minecraft 1.21.4 build.
 
-## how it works
+## Install
 
-wasd -> horse move horiz
-space -> up
-lctrl -> down
+Download `horsefly-1.0.1.jar` from this fork's [development release](https://github.com/habue/horsefly/releases/tag/snapshot) or a successful [Actions build](https://github.com/habue/horsefly/actions), then place it beside Meteor in your `mods` folder. Do not install a sources JAR.
 
-## how the NaN exploit works
+The module is **Movement → Horse Fly**. WASD controls horizontal movement, Jump ascends and Sprint descends (using your configured key bindings).
 
-`NaN` value getting shoved down the throat of grim prediction
+## Settings
 
-### getting past the input check
+- `speed`: horizontal blocks per tick; default 1.
+- `vertical-speed`: vertical blocks per tick; default 0.5.
+- `glide`: downward motion while idle; default 0.
+- `nan-input`: optional ViaFabricPlus steering override; default on.
+- `nan-delay`: ordinary input ticks between overrides; default 0.
 
-`NaN` means "Not a Number". It has a valid representation in a packet 32bit float field but its comparisons behave differently from ordinary numbers:
+ViaFabricPlus is optional. Its steering override only applies when translating to a server protocol at or below Minecraft 1.21.1; ordinary horse movement does not require it. Server acceptance of movement is not guaranteed.
 
-```java
-Float.NaN > 0.98f;   // false
-Float.NaN < -0.98f;  // false
-Float.NaN == Float.NaN; // false
-Float.NaN != Float.NaN; // true
+## Build
+
+```sh
+./gradlew build
 ```
 
-A check that rejects input only when its value exceeds the allowed range will therefore miss NaN:
+Installable output: `build/libs/horsefly-1.0.1.jar`.
 
-```java
-if (Math.abs(forward) > 0.98f || Math.abs(sideways) > 0.98f) {
-    rejectInput();
-}
-```
+The build uses Minecraft 26.1.2, Meteor's 26.1.2 snapshot line, Java 25 and a fixed Loom release. Pushes to `main` build an artifact and update the development release; pull requests build with read-only repository permissions. Fork owners may need to enable Actions on GitHub before the first run.
 
-Both comparisons evaluate to false when both inputs are NaN
-
-### fucking the prediction
-
-Clamping alone does not repair the input. For example:
-
-```java
-float input = Float.NaN;
-double clamped = Math.min(0.98, Math.max(-0.98, input)); // NaN
-double acceleration = clamped * movementSpeed;          // NaN
-```
-
-Grims [steering listener](https://github.com/GrimAnticheat/Grim/blob/d8b8ae4331f705c4992fe16b4b8689a6f28bee38/common/src/main/java/ac/grim/grimac/events/packets/PacketPlayerSteer.java#L34-L46) stores the received floats. Its [movement runner](https://github.com/GrimAnticheat/Grim/blob/d8b8ae4331f705c4992fe16b4b8689a6f28bee38/common/src/main/java/ac/grim/grimac/predictionengine/MovementCheckRunner.java#L670-L673) applies that min/max clamp, and its [horse simulation](https://github.com/GrimAnticheat/Grim/blob/d8b8ae4331f705c4992fe16b4b8689a6f28bee38/common/src/main/java/ac/grim/grimac/predictionengine/movementtick/MovementTickerHorse.java#L20-L28) uses those values to construct presumably real movement input. That path can introduce nonfinite values into the prediction motion
-
-## settings
-
-- `speed` - blocks per tick, default 1 (20 blocks/s)
-- `vertical speed` - blocks per tick going up or down, default 0.5
-- `glide` - how far you sink per tick when idle, default 0
-- `nan input` - send NaN horse steering input through ViaFabricPlus, default on
-- `nan delay` - ordinary input ticks between NaN inputs, 0–20, default 0 (every tick)
-
-NaN input needs ViaFabricPlus to equal to or below 1.21.1
-
-## install
-
-Put the jar in your mods folder with meteor
+See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the source review and its limits.
